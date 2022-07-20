@@ -1,12 +1,24 @@
 # Conway's Game of Life
 
-Implemented with SDL and QuadTree, tested on OSX. (Probably would also build on Windows)
+Implemented with SDL and QuadTree, tested on OSX and Windows.
+
+## Build
+### Unix and MacOSX
+```
+$ make
+```
+
+### Windows
+```
+$ cmake -B build.win
+$ cmake --build build.win --config Release
+$ cp build.win\Release\game.exe .
+```
 
 
 ## Usage
 
 ```
-$ make
 $ echo """
 (0, 0)
 (1, 0)
