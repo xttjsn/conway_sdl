@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <memory>
 #include <cstdint>
+#include <exception>
+#include <stdexcept>
 
 typedef int64_t Coord;
 typedef uint64_t Len;

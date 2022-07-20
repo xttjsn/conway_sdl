@@ -13,24 +13,31 @@ static Coord MIN = std::numeric_limits<Coord>::min();
     ((a / 2) + (b / 2) + (((a % 2) + (b % 2)) / 2))
 
 inline Coord big_int_addition(Coord a, Coord b) {
-    // if (b > 0 && a > MAX - b) {
-    //     // Will overflow, wrap around
-    //     return (a + INT_MIN) + (b + INT_MIN);
-    // }
-    // else if (b < 0 && a < MIN - b) {
-    //     // Will underflow, wrap around
-    //     return (a - INT_MIN) + (b - INT_MIN);
-    // }
-    // return a + b;
+#ifdef Windows
+    if (b > 0 && a > MAX - b) {
+        // Will overflow, wrap around
+        return (a + MIN) + (b + MIN);
+    }
+    else if (b < 0 && a < MIN - b) {
+        // Will underflow, wrap around
+        return (a - MIN) + (b - MIN);
+    }
+    return a + b;
+#else
     int64_t res;
     __builtin_add_overflow(a, b, &res);
     return res;
+#endif
 }
 
 inline Coord big_int_subtraction(Coord a, Coord b) {
+#ifdef Windows
+    return big_int_addition(a, -b);
+#else
     int64_t res;
     __builtin_sub_overflow(a, b, &res);
     return res;
+#endif
 }
 
 

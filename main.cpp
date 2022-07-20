@@ -4,8 +4,13 @@
 #include <fstream>
 #include <ctype.h>
 #include "cellmap.h"
+#if Windows
+#include <windows.h>
+#endif
+#if JSON
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+#endif
 
 constexpr int kCellSize = 5;
 constexpr int kWindowWidth = 1080;
@@ -31,13 +36,18 @@ void debugDrawCell(unsigned int x, unsigned int y, RGBA color)
 	}
 }
 
+#if DEBUG
 void debugUpdate() {
     for (int i = 0; i < std::min(kWindowWidth, kWindowHeight); i++) {
         debugDrawCell(i, i, kOnColor);
     }
 }
-
+#endif
+#ifdef Windows
+int wmain(int argc, wchar_t* argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 #if JSON
     if (argc < 2) {
@@ -54,7 +64,7 @@ int main(int argc, char *argv[])
 #if CIN
     std::vector<XY> xys;
     Coord x, y;
-    bool neg;
+    bool neg = false;
     std::string s_int;
     char c;
     while (std::cin >> c) {
