@@ -1,6 +1,6 @@
 # Conway's Game of Life
 
-Implemented with SDL and QuadTree, tested on OSX.
+Implemented with SDL and QuadTree, tested on OSX. (Probably would also build on Windows)
 
 
 ## Usage
