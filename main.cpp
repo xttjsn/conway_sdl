@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <ctype.h>
 #include "cellmap.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
@@ -38,6 +39,7 @@ void debugUpdate() {
 
 int main(int argc, char *argv[])
 {
+#if JSON
     if (argc < 2) {
         std::cerr << "Usage: ./game <input file>\n";
         return -1;
@@ -47,6 +49,35 @@ int main(int argc, char *argv[])
     std::ifstream f(argv[1]);
     json json_data = json::parse(f);
     json points = json_data["data"];
+#endif
+
+#if CIN
+    std::vector<XY> xys;
+    Coord x, y;
+    bool neg;
+    std::string s_int;
+    char c;
+    while (std::cin >> c) {
+        if (isdigit(c)) {
+            s_int = s_int.append(1, c);
+        }
+        else if (c == ',') {
+            x = neg ? -std::atol(s_int.c_str()) : std::atol(s_int.c_str());
+            s_int = "";
+            neg = false;
+        }
+        else if (c == ')') {
+            y = neg ? -std::atol(s_int.c_str()) : std::atol(s_int.c_str()) ;
+            s_int = "";
+            neg = false;
+            xys.emplace_back(x, y);
+        }
+        else if (c == '-') {
+            neg = true;
+        }
+        // Ignore other cases
+    }
+#endif
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -63,13 +94,21 @@ int main(int argc, char *argv[])
     SDL_Event ev;
     bool started = false;
     bool quit = false;
-    CellMap map(surface, kWindowWidth, kWindowHeight, kCellSize);
+    CellMap map(surface, kWindowWidth, kWindowHeight, kCellSize, 10);
 
     // Put points in
+#if JSON
     for (json::iterator it = points.begin(); it != points.end(); ++it) {
         XY xy((*it)[0], (*it)[1]);
         map.addCell(xy);
     }
+#endif
+
+#if CIN
+    for (auto& xy : xys) {
+        map.addCell(xy);
+    }
+#endif
 
     while (!quit) {
         while (SDL_PollEvent(&ev) != 0) {

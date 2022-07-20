@@ -152,7 +152,7 @@ public:
 
 class CellMap {
 public:
-    CellMap(SDL_Surface* surface, int hpixels, int vpixels, int cellSize);
+    CellMap(SDL_Surface* surface, int hpixels, int vpixels, int cellSize, int printAtIteration);
 
     void update();
     void drawCurrent();
@@ -184,6 +184,10 @@ private:
     // (i.e. the coordinate of the left top cell)
     Coord m_hoff;
     Coord m_voff;
+
+    int m_printAtIteration;
+
+    int m_iteration;
 };
 
 

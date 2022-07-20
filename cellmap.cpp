@@ -61,7 +61,7 @@ void clearSurface(void* pixels, int len) {
 }
 
 
-CellMap::CellMap(SDL_Surface* surface, int hpixels, int vpixels, int pixelsPerCell)
+CellMap::CellMap(SDL_Surface* surface, int hpixels, int vpixels, int pixelsPerCell, int printAtIteration)
     : m_surface(surface),
       m_celltree(nullptr),
       m_pixelsPerCell(pixelsPerCell),
@@ -71,7 +71,8 @@ CellMap::CellMap(SDL_Surface* surface, int hpixels, int vpixels, int pixelsPerCe
       m_vcells(vpixels / pixelsPerCell),
       m_hoff(-(hpixels / pixelsPerCell / 2)),
       m_voff(-(vpixels / pixelsPerCell / 2)),
-      m_queryBox(XY(0, 0), -m_hcells/2, m_hcells/2, -m_vcells/2, m_vcells/2) {
+      m_queryBox(XY(0, 0), -m_hcells/2, m_hcells/2, -m_vcells/2, m_vcells/2),
+      m_printAtIteration(printAtIteration) {
     m_celltree = CellTreeNode::createRoot();
     // m_queryBox = AABB();        //
 }
@@ -133,10 +134,14 @@ void CellMap::update() {
             this->drawCell(result.first, kOnColor);
         }
     }
-    m_celltree->print(std::cout);
+    if (m_iteration == m_printAtIteration) {
+        m_celltree->print(std::cout);
+    }
 
     // Update celltree according to the rules
     m_celltree->update();
+
+    m_iteration++;
 }
 
 CellTreeNode::CellTreeNode(AABB ibbox, bool root)
