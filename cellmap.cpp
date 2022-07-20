@@ -133,9 +133,7 @@ void CellMap::update() {
             this->drawCell(result.first, kOnColor);
         }
     }
-#if DEBUG
     m_celltree->print(std::cout);
-#endif
 
     // Update celltree according to the rules
     m_celltree->update();
